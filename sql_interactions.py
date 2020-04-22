@@ -1,4 +1,5 @@
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 import pandas as pd
 import MySQLdb
 import pyodbc
@@ -167,6 +168,8 @@ def get_user_list(UID):
 
     return data #Formated as a 2d tuple
 =======
+=======
+>>>>>>> Stashed changes
 import pandas as pd
 import MySQLdb
 import pyodbc
@@ -359,4 +362,7 @@ def get_user_list(UID):
     cursor.close()
 
     return data #Formated as a 2d tuple
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
