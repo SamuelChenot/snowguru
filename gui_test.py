@@ -128,10 +128,6 @@ def show_info_hourly(MID):
     popup.mainloop()
 
 
-def update_user(zipcode):
-    update_user_coords(zipcode.get())
-    tm.showinfo("Mountain Database", "Updated")
-
 
 """
 Initializes the app and calls the forst window
@@ -175,6 +171,8 @@ class StartPage(tk.Frame):
                   command=lambda: master.switch_frame(HourlyWeatherMountains)).pack()        
         tk.Button(self, text="Edit User Info",
                   command=lambda: master.switch_frame(EditUserInfo)).pack()
+        self.photo = ImageTk.PhotoImage(Image.open("mountain.jpg"))
+        tk.Label(self, image = self.photo, compound="top").pack(side="top", fill="x", pady=5)
 
 class EditUserInfo(tk.Frame):
     def __init__(self, master):
