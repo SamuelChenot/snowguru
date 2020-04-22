@@ -20,10 +20,8 @@ from kivy.uix.label import Label
 from kivy.uix.image import Image
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.recycleview import RecycleView
-from kivy.uix.widget import Widget
 
-from sql_interactions import *
-from capture_app_info import *
+
 import setup
 import zip_find
 
@@ -56,6 +54,13 @@ class MenuManager(ScreenManager):
 # TODO split these classes up into multiple different files, for readability
 # where all of the screens functions can be stored.
 
+class LoginPopup(Popup):
+
+    #open the signup screen and close the current login screen
+    def openSignupPopup(self):
+        SignupPopup().open()
+        self.dismiss()
+
 
 class SettingsScreen(Screen):
 
@@ -70,8 +75,7 @@ class SettingsScreen(Screen):
         try:
             int(self.zipcode.text)
             city, state = zip_find.zip_to_city_state(self.zipcode.text)
-            lat, lng = zip_find.zip_to_coords(self.zipcode.text)
-            capture_zip(lat,lng)
+
             user_data['zip'] = self.zipcode.text
             user_data['city'] = city
             user_data['state'] = state
@@ -82,30 +86,20 @@ class SettingsScreen(Screen):
             self.city_state_label.text = "Location: " + city + ", " + state
         except:
             self.city_state_label.text = "Error: invalid zip code"
-
+    
         #print the user's city/state to the city_state_label
 
-
-class HomeMountainScreen(Screen):
-
-    def getItems(self):
-        data = list(get_mountains_hourly(get_uid(), True))
-        return data
-
-class MountainFinderScreen(Screen):
-
-    def updatemountain(self):
-        uid = get_uid()
-        capture_id((uid), self.mountain_id.text)
-        if(self.mountain_id.text != ''and self.mountain_id.text > "0" and self.mountain_id.text < "69"):
-            self.successful.text = "Mountain ID: Captured "+ str(self.mountain_id.text)
-        else:
-            self.successful.text = "Mountain ID: Invalid"
         return
 
+class HomeMountainScreen(Screen):
+    pass
+
+class MountainFinderScreen(Screen):
+    
     def getItems(self):
         f = open("mountain.txt", "r")
-        return f
+        list1 = self.list = list(f)
+        return list1
 class SignupPopup(Popup):
     pass
 

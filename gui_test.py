@@ -3,21 +3,19 @@ import tkinter.messagebox as tm
 import tkinter.ttk as ttk
 import sql_interactions as db
 from PIL import Image
+import zip_find
 
 import tkinter as tk
 #GLOBAL
 UID = 0
+zipc = ""
 
 def update_user_coords(zipcode):
     global UID
-    LAT = 0
-    LON = 0
+    global zipc
+    LAT,LON = zip_find.zip_to_coords(str(zipcode))
 
-
-    #Need to implement
-
-
-    # db.update_user_coordinates(UID, LAT, LON)
+    db.update_user_coordinates(UID, LAT, LON)
 
 
 """
@@ -32,7 +30,9 @@ def set_UID():
 """
 Set a new UID and switch the the front page
 """
-def login(master):
+def login(master, zipc):
+    zipc = zipc.get()
+    update_user_coords(zipc)
     set_UID()
     master.switch_frame(StartPage)
 
@@ -54,16 +54,31 @@ Shows all daily infor
 def show_info_daily(MID):
     #SQL call
     data = db.get_mountains_daily_info(MID)
+
+    popup = tk.Tk()
+    popup.wm_title("Mountain Information")
+    #popup.geometry('{}x{}'.format(400, 600))
+    B1 = ttk.Button(popup, text="Exit", command = popup.destroy)
+    info = ['Name', 'MID', 'DAY', 'SUNRISETIME', 'SUNSETTIME' , 'PRECIPINTENSITY', 'PRECIPINTENSITYMAX', 'PRECIPPROB', 'PRECIPTYPE', 'TEMPHIGH', 'TEMPLOW', 'HUMIDITY', 'WINDSPEED', 'WINDGUST', 'WINDGUSTTIME', 'WINDBEARING', 'VISIBILITY', 'PREDICTEDSNOW']
+    print(data)
+    scrollbar = Scrollbar(popup)
+    scrollbar.pack( side = RIGHT, fill = Y )
+
+    mylist = Listbox(popup, yscrollcommand = scrollbar.set )
+    for i in range(len(info)):
+        if info[i] == 'DAY':
+            mylist.insert(END, 'Today: \n')
+        else:
+            mylist.insert(END, str(info[i]) +": "+ str(data[0][i]))
+
+    mylist.pack( side = LEFT, fill = BOTH )
+    scrollbar.config( command = mylist.yview )
     
-    #THE FOLLWING IS SUBJECT TO CHANGE, CURRENTLY A & DAY FORCAST
-    Outstring = "Today: "+str(data[0][9])+"/"+str(data[0][10])+" Fahrenheight\n"
+    
+    
 
-    for i in range(1, 7):
-        Outstring += "Day "+str(i)+": "+str(data[i][9])+"/"+str(data[i][10])+" Fahrenheight\n"
-
-    #Popup window
-    tm.showinfo("Mountain Database", Outstring)
-    return
+    B1.pack()
+    popup.mainloop()
 
 """
 Initializes the app and calls the forst window
@@ -122,28 +137,37 @@ class AllMountains(tk.Frame):
         tk.Button(self, text="Go back to start page",
                   command=lambda: master.switch_frame(StartPage)).pack()
 
-        #Initilize the scroll bar
-        scrollbar = Scrollbar(self)
-        scrollbar.pack(side=RIGHT, fill=Y)
+        
         
         #SQl call
         data = db.get_mountain_Names()
 
         #Adds items to the canvas which can be scrolled
-        canvas = tk.Canvas(self)
-        frame = tk.Frame(canvas)
+        container = ttk.Frame(self)
+        canvas = tk.Canvas(container, width=380, height=550)
+        scrollbar = ttk.Scrollbar(container, orient="vertical", command=canvas.yview)
+        scrollable_frame = ttk.Frame(canvas)
+
+        scrollable_frame.bind(
+            "<Configure>",
+            lambda e: canvas.configure(
+                scrollregion=canvas.bbox("all")
+            )
+        )
+
+        canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
+
+        canvas.configure(yscrollcommand=scrollbar.set)
+
         for i in data:
-            tk.Button(canvas, text = str(i[0]), font=('Helvetica', 18, "bold"), \
+            tk.Button(scrollable_frame, text = str(i[0]), font=('Helvetica', 18, "bold"), \
                 command=lambda i=i: toggle_home(str(i[1]))).pack(side="top", fill="x", pady=5)
 
 
         #The following adds the canvas to the scrollbar
-        canvas.create_window(0, 0, anchor='nw', window=frame)
-        canvas.update_idletasks()
-        canvas.configure(scrollregion=canvas.bbox('all'), 
-                        yscrollcommand=scrollbar.set)
-        canvas.pack(fill='both', expand=True, side='left')
-        scrollbar.pack(fill='y', side='right')
+        container.pack()
+        canvas.pack(side="left", fill="both", expand=True)
+        scrollbar.pack(side="right", fill="y")
 
 """ 
 Displays all of the users selected mountains stored in HomeMT in the SQL database
@@ -160,26 +184,39 @@ class SavedMountains(tk.Frame):
                   command=lambda: master.switch_frame(StartPage)).pack()
 
         #Initilize the scroll bar
-        scrollbar = Scrollbar(self)
-        scrollbar.pack(side=RIGHT, fill=Y)
+        # scrollbar = Scrollbar(self)
+        # scrollbar.pack(side=RIGHT, fill=Y)
 
         #SQL call
         data = db.get_user_list(UID)
 
-        #Adds items to the canvas which can be scrolled
-        canvas = tk.Canvas(self)
-        frame = tk.Frame(canvas)
+        # #Adds items to the canvas which can be scrolled
+
+        container = ttk.Frame(self)
+        canvas = tk.Canvas(container, width=380, height=550)
+        scrollbar = ttk.Scrollbar(container, orient="vertical", command=canvas.yview)
+        scrollable_frame = ttk.Frame(canvas)
+
+        scrollable_frame.bind(
+            "<Configure>",
+            lambda e: canvas.configure(
+                scrollregion=canvas.bbox("all")
+            )
+        )
+
+        canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
+
+        canvas.configure(yscrollcommand=scrollbar.set)
+
         for i in data:
-            tk.Button(self, text = str(i[0]), font=('Helvetica', 18, "bold"), \
+            b = tk.Button(scrollable_frame, text = str(i[0]), font=('Helvetica', 18, "bold"), \
                 command=lambda i=i: show_info_daily(str(i[1]))).pack(side="top", fill="x", pady=5)
 
-        #The following adds the canvas to the scrollbar
-        canvas.create_window(0, 0, anchor='nw', window=frame)
-        canvas.update_idletasks()
-        canvas.configure(scrollregion=canvas.bbox('all'), 
-                        yscrollcommand=scrollbar.set)           
-        canvas.pack(fill='both', expand=True, side='left')
-        scrollbar.pack(fill='y', side='right')
+        container.pack()
+        canvas.pack(side="left", fill="both", expand=True)
+        scrollbar.pack(side="right", fill="y")
+
+
 
 """
 Login frame that prompts the creation of the new UID
@@ -194,20 +231,21 @@ class LoginFrame(tk.Frame):
         self.label_username = Label(self, text = 'Zip Code')
 
         #Entries
-        target_in = tk.StringVar()
-        self.entry_username = Entry(self)
+        zipc = tk.StringVar()
+        self.entry_username = Entry(self, textvariable=zipc)
         self.label_username.grid(row=0, sticky=E)
         self.entry_username.grid(row=0, column=1)
-
         #Option the save the location (Unimplemented)
         self.checkbox = Checkbutton(self, text="Save my Location")
         self.checkbox.grid(columnspan=2)
 
         #Login button, moves user to main screen
-        self.logbtn = Button(self, text="Login", command=lambda: login(master))
+        self.logbtn = Button(self, text="Login", command=lambda: login(master, zipc))
         self.logbtn.grid(columnspan=2)
 
         self.pack()
+
+
 
 
 #Run

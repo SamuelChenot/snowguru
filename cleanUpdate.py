@@ -6,8 +6,8 @@ import pyodbc
 import re
 
 #API Key
-DARK_SKY_KEY = 'ce4149755b8988664a910e0ba7f9e5d1'
-#DARK_SKY_KEY = 'cd76150a325d13271dab874702496514'
+#DARK_SKY_KEY = 'ce4149755b8988664a910e0ba7f9e5d1'
+DARK_SKY_KEY = 'cd76150a325d13271dab874702496514'
 
 #pull the location data from the mountains file
 def getCoordinates():
@@ -80,15 +80,17 @@ def getCoordinates():
 ['Stratton Mountain Resort', 43.1134, -72.9081],
 ['Sugarbush Resort', 44.1359, -72.8944],
 ['Suicide Six', 43.6651, -72.5433]]
-    mountainInfo = mountainInfo[0:2]
+    mountainInfo = mountainInfo[0:20]
     return mountainInfo
 
 #get the snowfall for both lists
 def averageSnow(summary):
+    # print(summary)
     if "snow" in summary:
         #find the height (in inches) of snow
         temp = re.findall(r'\d+', summary)
         #average the two if there is a comparison
+        # print(temp)
         if(len(temp) == 2):
             return ((int(temp[0])+int(temp[1]))/2)
         #one measurement is given, return it
@@ -113,11 +115,11 @@ def updateHourly(db, cursor, MID, hourly):
         cursor.execute(Query + str(averageSnow(hour['summary'])) + ");")   
         db.commit()
         hourIndex += 1
-    
+        
 def updateDaily(db, cursor, MID, daily):
     attributes = ['sunriseTime','sunsetTime','precipIntensity','precipIntensityMax','precipProbability','precipType','temperatureHigh','temperatureLow','humidity','windSpeed','windGust','windGustTime','windBearing','visibility']
     td = timedelta(hours=5)
-    dayIndex = 0
+    dayIndex = 0;
     for day in daily.data:
         Query = "REPLACE INTO `Daily` VALUES (" + str(MID) + "," + str(dayIndex) + ","       
         for attribute in attributes:
@@ -153,7 +155,7 @@ def main():
         updateHourly(db, cursor, MID, weather.hourly)
         updateDaily(db, cursor, MID, weather.daily)
         MID += 1
-        print("Updated " + mountain[0])
+        print("Updated  " + mountain[0])
 
     print("Database successfully updated!")
     
@@ -161,12 +163,15 @@ def main():
     sql_string = 'SELECT * FROM Daily'
     data = pd.read_sql(sql_string, con=db)
     print(data)
-    
+
     sql_string = 'SELECT * FROM Hourly'
     data = pd.read_sql(sql_string, con=db)
     print(data)
 
-    #sql_string = 'CALL updateDatabase();'
-    #cursor.execute(sql_string)
 
+    # sql_string = 'CALL updateDatabase();'
+    # cursor.execute(sql_string)
+
+    cursor.close()
+    
 main()
