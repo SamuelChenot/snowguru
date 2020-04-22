@@ -1,5 +1,6 @@
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 from tkinter import *
 import tkinter.messagebox as tm
 import tkinter.ttk as ttk
@@ -311,6 +312,8 @@ if __name__ == "__main__":
     app.mainloop()
 
 =======
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 from tkinter import *
@@ -689,6 +692,10 @@ if __name__ == "__main__":
 
     app = SampleApp()
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+    app.mainloop()
+>>>>>>> Stashed changes
+=======
     app.mainloop()
 >>>>>>> Stashed changes
 =======
