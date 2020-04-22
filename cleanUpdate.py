@@ -80,7 +80,7 @@ def getCoordinates():
 ['Stratton Mountain Resort', 43.1134, -72.9081],
 ['Sugarbush Resort', 44.1359, -72.8944],
 ['Suicide Six', 43.6651, -72.5433]]
-    mountainInfo = mountainInfo[0:20]
+    mountainInfo = mountainInfo[0:65]
     return mountainInfo
 
 #get the snowfall for both lists

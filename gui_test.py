@@ -32,7 +32,6 @@ def get_previous_UID(master):
         set_UID()
     
 
-    print("here")
     master.switch_frame(StartPage)
     
 
@@ -82,7 +81,7 @@ def show_info_daily(MID):
     #popup.geometry('{}x{}'.format(400, 600))
     B1 = ttk.Button(popup, text="Exit", command = popup.destroy)
     info = ['Name', 'MID', 'DAY', 'SUNRISETIME', 'SUNSETTIME' , 'PRECIPINTENSITY', 'PRECIPINTENSITYMAX', 'PRECIPPROB', 'PRECIPTYPE', 'TEMPHIGH', 'TEMPLOW', 'HUMIDITY', 'WINDSPEED', 'WINDGUST', 'WINDGUSTTIME', 'WINDBEARING', 'VISIBILITY', 'PREDICTEDSNOW']
-    print(data)
+
     scrollbar = Scrollbar(popup)
     scrollbar.pack( side = RIGHT, fill = Y )
 
@@ -109,7 +108,7 @@ def show_info_hourly(MID):
     #popup.geometry('{}x{}'.format(400, 600))
     B1 = ttk.Button(popup, text="Exit", command = popup.destroy)
     info = ['Name', 'MID', 'Hour', 'PRECIPINTENSITY', 'PRECIPPROB', 'PRECIPTYPE','TEMPERATURE', 'APPARENTTEMP' ,'HUMIDITY', 'WINDSPEED', 'WINDGUST', 'WINDBEARING', 'VISIBILITY', 'PREDICTEDSNOW']
-    print(data)
+
     scrollbar = Scrollbar(popup)
     scrollbar.pack( side = RIGHT, fill = Y )
 
@@ -166,7 +165,7 @@ class StartPage(tk.Frame):
         tk.Frame.configure(self,bg='gray77')
         tk.Frame.configure(master,bg='gray77')
         master.geometry('{}x{}'.format(400, 600))
-        tk.Label(self, text="Start page", font=('Helvetica', 18, "bold")).pack(side="top", fill="x", pady=5)
+        tk.Label(self, text="Menu", font=('Helvetica', 18, "bold")).pack(side="top", fill="x", pady=5)
         tk.Button(self, text="See All Mountains",
                   command=lambda: master.switch_frame(AllMountains)).pack()
         tk.Button(self, text="See Saved Mountains",
@@ -231,10 +230,16 @@ class AllMountains(tk.Frame):
 
         canvas.configure(yscrollcommand=scrollbar.set)
 
-        self.photo = ImageTk.PhotoImage(Image.open("mountbutton.jpg"))
+        self.photos = []
+        for i in range(1, 70):
+            photo = ImageTk.PhotoImage(Image.open("But_Pics/"+str(i)+".jpg"))
+            self.photos.append(photo)
+
+        photo = ImageTk.PhotoImage(Image.open("But_Pics/"+str(1)+".jpg"))
+        self.photos.append(photo)
 
         for i in data:
-            tk.Button(scrollable_frame, text = str(i[0]), image = self.photo, compound="top", font=('Helvetica', 18, "bold"), \
+            tk.Button(scrollable_frame, text = str(i[0]), image = self.photos[i[1]], compound="top", font=('Helvetica', 18, "bold"), \
                 command=lambda i=i: toggle_home(str(i[1]))).pack(side="top", fill="x", pady=5)
 
 
@@ -280,9 +285,17 @@ class SavedMountains(tk.Frame):
         canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
 
         canvas.configure(yscrollcommand=scrollbar.set)
-        self.photo = ImageTk.PhotoImage(Image.open("mountbutton.jpg"))
+
+
+        self.photos = []
+        for i in range(1, 70):
+            photo = ImageTk.PhotoImage(Image.open("But_Pics/"+str(i)+".jpg"))
+            self.photos.append(photo)
+
+
+
         for i in data:
-            b = tk.Button(scrollable_frame, text = str(i[0]), image = self.photo, compound="top", font=('Helvetica', 18, "bold"), \
+            b = tk.Button(scrollable_frame, text = str(i[0]), image = self.photos[i[1]], compound="top", font=('Helvetica', 18, "bold"), \
                 command=lambda i=i: show_info_daily(str(i[1]))).pack(side="top", fill="x", pady=5)
 
         container.pack()
@@ -360,9 +373,15 @@ class HourlyWeatherMountains(tk.Frame):
         canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
 
         canvas.configure(yscrollcommand=scrollbar.set)
-        self.photo = ImageTk.PhotoImage(Image.open("mountbutton.jpg"))
+
+        self.photos = []
+        for i in range(1, 70):
+            photo = ImageTk.PhotoImage(Image.open("But_Pics/"+str(i)+".jpg"))
+            self.photos.append(photo)
+
+
         for i in data:
-            b = tk.Button(scrollable_frame, text = str(i[0]), image = self.photo, compound="top", font=('Helvetica', 18, "bold"), \
+            b = tk.Button(scrollable_frame, text = str(i[0]), image = self.photos[i[1]], compound="top", font=('Helvetica', 18, "bold"), \
                 command=lambda i=i: show_info_hourly(str(i[1]))).pack(side="top", fill="x", pady=5)
 
         container.pack()
