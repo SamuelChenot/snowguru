@@ -158,17 +158,17 @@ class StartPage(tk.Frame):
     def __init__(self, master):
         tk.Frame.__init__(self, master)
         #Formats the size of the window
-        tk.Frame.configure(self,bg='gray77')
-        tk.Frame.configure(master,bg='gray77')
+        tk.Frame.configure(self,bg="gray45")
+        tk.Frame.configure(master,bg="gray45")
         master.geometry('{}x{}'.format(400, 600))
-        tk.Label(self, text="Menu", font=('Helvetica', 18, "bold")).pack(side="top", fill="x", pady=5)
-        tk.Button(self, text="See All Mountains",
+        tk.Label(self, text="Menu",bg="gray45", font=('Helvetica', 18, "bold")).pack(side="top", fill="x", pady=5)
+        tk.Button(self, text="See All Mountains",bg="gray45",
                   command=lambda: master.switch_frame(AllMountains)).pack()
-        tk.Button(self, text="See Saved Mountains",
+        tk.Button(self, text="See Saved Mountains",bg="gray45",
                   command=lambda: master.switch_frame(SavedMountains)).pack()
-        tk.Button(self, text="See Hourly Weather",
+        tk.Button(self, text="See Hourly Weather",bg="gray45",
                   command=lambda: master.switch_frame(HourlyWeatherMountains)).pack()        
-        tk.Button(self, text="Edit User Info",
+        tk.Button(self, text="Edit User Info",bg="gray45",
                   command=lambda: master.switch_frame(EditUserInfo)).pack()
         self.photo = ImageTk.PhotoImage(Image.open("mountain.jpg"))
         tk.Label(self, image = self.photo, compound="top").pack(side="top", fill="x", pady=5)
@@ -178,8 +178,8 @@ class EditUserInfo(tk.Frame):
         tk.Frame.__init__(self, master)
         #Formats the size of the window
         master.geometry('{}x{}'.format(400, 600))
-        tk.Frame.configure(self,bg='gray77')
-        tk.Label(self, text="Edit User Info", bg = "gray77", font=('Helvetica', 18, "bold")).pack(side="top", fill="x", pady=5)
+        tk.Frame.configure(self,bg="gray45")
+        tk.Label(self, text="Edit User Info", bg = "gray45", font=('Helvetica', 18, "bold")).pack(side="top", fill="x", pady=5)
         tk.Button(self, text="Go back to start page",
                   command=lambda: master.switch_frame(StartPage)).pack()
         
@@ -188,7 +188,7 @@ class EditUserInfo(tk.Frame):
         ZIP = tk.Entry(self, textvariable = zipc).pack()
 
         #Add button
-        self.logbtn = Button(self, text="Update", bg = "gray77", command=lambda: update_user(zipc)).pack()
+        self.logbtn = Button(self, text="Update", bg = "gray45", command=lambda: update_user(zipc)).pack()
 
         self.pack()
 
@@ -201,8 +201,8 @@ class AllMountains(tk.Frame):
         tk.Frame.__init__(self, master)
         #Formats the size of the window
         master.geometry('{}x{}'.format(400, 600))
-        tk.Frame.configure(self,bg='gray77')
-        tk.Label(self, text="All Mountains", bg = "gray77", font=('Helvetica', 18, "bold")).pack(side="top", fill="x", pady=5)
+        tk.Frame.configure(self,bg='gray45')
+        tk.Label(self, text="All Mountains", bg = "gray45", font=('Helvetica', 18, "bold")).pack(side="top", fill="x", pady=5)
         tk.Button(self, text="Go back to start page",
                   command=lambda: master.switch_frame(StartPage)).pack()
 
@@ -213,7 +213,7 @@ class AllMountains(tk.Frame):
 
         #Adds items to the canvas which can be scrolled
         container = ttk.Frame(self)
-        canvas = tk.Canvas(container, width=380, height=550, bg = "gray77")
+        canvas = tk.Canvas(container, width=380, height=550, bg = "gray45")
         scrollbar = ttk.Scrollbar(container, orient="vertical", command=canvas.yview)
         scrollable_frame = ttk.Frame(canvas)
 
@@ -254,8 +254,8 @@ class SavedMountains(tk.Frame):
         tk.Frame.__init__(self, master)
         #Formats the size of the window
         master.geometry('{}x{}'.format(400, 600))
-        tk.Frame.configure(self,bg='gray77')
-        tk.Label(self, text="SavedMountains", bg = "gray77", font=('Helvetica', 18, "bold")).pack(side="top", fill="x", pady=5)
+        tk.Frame.configure(self,bg='gray45')
+        tk.Label(self, text="SavedMountains", bg = "gray45", font=('Helvetica', 18, "bold")).pack(side="top", fill="x", pady=5)
         tk.Button(self, text="Go back to start page",
                   command=lambda: master.switch_frame(StartPage)).pack()
 
@@ -269,7 +269,7 @@ class SavedMountains(tk.Frame):
         # #Adds items to the canvas which can be scrolled
 
         container = ttk.Frame(self)
-        canvas = tk.Canvas(container, width=380, height=550, bg = "gray77")
+        canvas = tk.Canvas(container, width=380, height=550, bg = "gray45")
         scrollbar = ttk.Scrollbar(container, orient="vertical", command=canvas.yview)
         scrollable_frame = ttk.Frame(canvas)
 
@@ -311,28 +311,28 @@ class LoginFrame(tk.Frame):
 
 
         #Formats the size of the window
-        tk.Frame.configure(self,bg='gray77')
-        tk.Frame.configure(master,bg='gray77')
+        tk.Frame.configure(self,bg='gray45')
+        tk.Frame.configure(master,bg='gray45')
         master.geometry('{}x{}'.format(400, 600))
 
         self.back_img = ImageTk.PhotoImage(Image.open("mountain.jpg"))
 
 
 
-        self.label_username = Label(self, text = 'Zip Code', bg = "gray77")
+        self.label_username = Label(self, text = 'Zip Code', bg = "gray45")
 
         #Entries
         zipc = tk.StringVar()
-        self.entry_username = Entry(self, textvariable=zipc, bg = "gray77")
+        self.entry_username = Entry(self, textvariable=zipc, bg = "gray45")
         self.label_username.grid(row=1, sticky=E)
         self.entry_username.grid(row=1, column=1)
         #Option the save the location (Unimplemented)
-        self.checkbox = Button(self, text="Returning user", bg = "gray77", command=lambda: get_previous_UID(master))
+        self.checkbox = Button(self, text="Returning user", bg = "gray45", command=lambda: get_previous_UID(master))
         self.checkbox.grid(columnspan=2, row=0)
 
         #Login button, moves user to main screen
         # self.login_button = ImageTk.PhotoImage(Image.open("login_button.png"))
-        self.logbtn = Button(self, text="Create User", bg = "gray77", command=lambda: login(master, zipc))
+        self.logbtn = Button(self, text="Create User", bg = "gray45", command=lambda: login(master, zipc))
         self.logbtn.grid(columnspan=2)
 
         self.pack()
@@ -342,8 +342,8 @@ class HourlyWeatherMountains(tk.Frame):
         tk.Frame.__init__(self, master)
         #Formats the size of the window
         master.geometry('{}x{}'.format(400, 600))
-        tk.Frame.configure(self,bg='gray77')
-        tk.Label(self, text="SavedMountainsHourly", bg = "gray77", font=('Helvetica', 18, "bold")).pack(side="top", fill="x", pady=5)
+        tk.Frame.configure(self,bg='gray45')
+        tk.Label(self, text="SavedMountainsHourly", bg = "gray45", font=('Helvetica', 18, "bold")).pack(side="top", fill="x", pady=5)
         tk.Button(self, text="Go back to start page",
                   command=lambda: master.switch_frame(StartPage)).pack()
 
@@ -357,7 +357,7 @@ class HourlyWeatherMountains(tk.Frame):
         # #Adds items to the canvas which can be scrolled
 
         container = ttk.Frame(self)
-        canvas = tk.Canvas(container, width=380, height=550, bg = "gray77")
+        canvas = tk.Canvas(container, width=380, height=550, bg = "gray45")
         scrollbar = ttk.Scrollbar(container, orient="vertical", command=canvas.yview)
         scrollable_frame = ttk.Frame(canvas)
 
