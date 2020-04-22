@@ -15,6 +15,8 @@ def sort_distence_all(UID):
     cursor.callproc('searchDistance',[str(UID), "0", ])
     data = cursor.fetchall()
 
+    return data
+
 
 
 

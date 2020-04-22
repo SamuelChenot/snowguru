@@ -30,6 +30,7 @@ def get_previous_UID(master):
 
     print("here")
     master.switch_frame(StartPage)
+    
 
     
 
@@ -92,10 +93,14 @@ def show_info_daily(MID):
     scrollbar.config( command = mylist.yview )
     
     
-    
-
     B1.pack()
     popup.mainloop()
+
+
+def update_user(zipcode):
+    update_user_coords(zipcode.get())
+    tm.showinfo("Mountain Database", "Updated")
+
 
 """
 Initializes the app and calls the forst window
@@ -153,15 +158,12 @@ class EditUserInfo(tk.Frame):
         tk.Button(self, text="Go back to start page",
                   command=lambda: master.switch_frame(StartPage)).pack()
         
-
-        label1 = tk.Label(self, text= "Enter Latitude").pack()
-        LAT = tk.Entry(self).pack()
-
-        label2 = tk.Label(self, text= "Enter Longitude").pack()
-        LON = tk.Entry(self).pack()
+        zipc = tk.StringVar()
+        label1 = tk.Label(self, text= "Enter Zipcode").pack()
+        ZIP = tk.Entry(self, textvariable = zipc).pack()
 
         #Add button
-        
+        self.logbtn = Button(self, text="Update", bg = "gray77", command=lambda: update_user(zipc)).pack()
 
         self.pack()
 
