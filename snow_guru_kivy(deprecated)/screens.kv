@@ -1,0 +1,126 @@
+# File name: screens.kv
+
+#The list of all screens that are contained within the menu manager. every feature that needs a screen should be here
+<MenuManager>:
+	SettingsScreen:
+	HomeMountainScreen:
+    MountainFinderScreen:
+
+<SettingsScreen>:
+	name: "Settings"
+
+	#attributes for the python file
+	zipcode: _zip_code
+	city_state_label: _city_state_label
+
+	BoxLayout:
+		orientation: "vertical"
+		canvas.before:
+			Color:
+				rgba: 1, 1, 1, .5
+			Rectangle:
+				pos: self.pos
+				size: self.size
+
+		Label:
+			text: "Settings Screen"
+            valign: 'middle'
+			size_hint_y: None
+			height: 20
+
+		#GridLayout of all the user input lines for the settings
+		GridLayout:
+			cols: 2
+			spacing: 10
+			Label:
+				text: "Zip Code:"
+				size_hint: (None, None)
+				size_hint: (.2, None)
+			TextInput:
+				id: _zip_code
+				multiline: False			
+
+		Label:
+			id: _city_state_label
+			text: ""
+
+		Button:
+			text: "Update Settings"
+			on_release: root.updateSettings()
+
+<HomeMountainScreen>:
+	name: "HomeMountain"
+
+	BoxLayout:
+		orientation: "vertical"
+		canvas.before:
+			Color:
+				rgba: 1, 1, 1, .5
+			Rectangle:
+				pos: self.pos
+				size: self.size
+		Button:
+			text: "Get Home Mountains"
+			valign: 'middle'
+			size_hint: (1, .2)
+		Label:
+			text: "Home Mountains Screen"
+            valign: 'middle'
+			size_hint_y: None
+			height: 45
+		RecycleView:
+            data:[{'text': str(x),'size_hint':(1,None)} for x in root.getItems()]
+            viewclass: 'Button'
+            RecycleBoxLayout:
+                size_hint: (1,None)
+                height: self.minimum_height
+                orientation: 'vertical'
+
+<MountainFinderScreen>:
+    name: "MountainFinder"
+
+	mountain_id: _mountain_id
+	successful: _success_not_success
+
+	BoxLayout:
+		orientation: "vertical"
+		canvas.before:
+			Color:
+				rgba: 1, 1, 1, .5
+			Rectangle:
+				pos: self.pos
+				size: self.size
+		
+		Label:
+			text: "Home Mountains Screen"
+            valign: 'middle'
+			size_hint_y: None
+			height: 45
+		Label:
+			text: "Enter Mountain ID #: 1-69"
+			valign: 'middle'
+			size_hint: (1, .2)
+		TextInput:
+			id: _mountain_id
+			size_hint: (1, .2)
+			valign: 'middle'
+			multiline: False
+		Label:
+			id: _success_not_success
+			valign: 'middle'
+			size_hint: (1, .2)
+			text: ""
+		Button:
+			text: "Set as home mountain"
+			valign: 'middle'
+			on_release: root.updatemountain()
+			size_hint: (1, .2)
+		RecycleView:
+			data:[{'text': str(x),'size_hint':(1,None)} for x in root.getItems()]
+            viewclass: 'Button'
+            RecycleBoxLayout:
+                size_hint: (1,None)
+                height: self.minimum_height
+                orientation: 'vertical'
+				
+

@@ -1,0 +1,23 @@
+# File name: menubar.kv
+
+<MenuBar@BoxLayout>:
+	orientation: 'horizontal'
+	padding: 2
+	
+	
+	#the menubuttons change the view to teh selected screen
+	MenuButton:
+		text: 'HomeMountain'
+	MenuButton:
+		text: 'MountainFinder'
+	
+	#this dropdown menu opens when the "Fun" button is selected
+	#it contains buttons for the other features for the program.
+			
+	MenuButton:
+		text: 'Settings'
+
+#This is the class for the buttons on the Main Menu bar at the bottom of the app		
+<MenuButton>:
+	on_release: self.parent.screen_manager.switchScreens(self.text)
+
