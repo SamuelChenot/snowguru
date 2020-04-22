@@ -2,7 +2,7 @@ from tkinter import *
 import tkinter.messagebox as tm
 import tkinter.ttk as ttk
 import sql_interactions as db
-from PIL import Image
+from PIL import ImageTk, Image
 import zip_find
 
 import tkinter as tk
@@ -17,6 +17,21 @@ def update_user_coords(zipcode):
 
     db.update_user_coordinates(UID, LAT, LON)
 
+def get_previous_UID(master):
+
+    try:
+        file = open("UID.dat", "r")
+        global UID 
+        UID = int(file.readline())
+        print("Loaded User: "+str(UID))
+    except:
+        set_UID()
+    
+
+    print("here")
+    master.switch_frame(StartPage)
+
+    
 
 """
 Set the user to a unique number identified by the sql system
@@ -26,6 +41,8 @@ def set_UID():
     #SQL call
     UID_ = db.get_new_uid(0,0)
     UID = UID_
+    file = open("UID.dat","w")
+    file.write(str(UID))
 
 """
 Set a new UID and switch the the front page
@@ -123,6 +140,31 @@ class StartPage(tk.Frame):
                   command=lambda: master.switch_frame(AllMountains)).pack()
         tk.Button(self, text="See Saved Mountains",
                   command=lambda: master.switch_frame(SavedMountains)).pack()
+        tk.Button(self, text="Edit User Info",
+                  command=lambda: master.switch_frame(EditUserInfo)).pack()
+
+class EditUserInfo(tk.Frame):
+    def __init__(self, master):
+        tk.Frame.__init__(self, master)
+        #Formats the size of the window
+        master.geometry('{}x{}'.format(400, 600))
+        tk.Frame.configure(self,bg='gray77')
+        tk.Label(self, text="Edit User Info", bg = "gray77", font=('Helvetica', 18, "bold")).pack(side="top", fill="x", pady=5)
+        tk.Button(self, text="Go back to start page",
+                  command=lambda: master.switch_frame(StartPage)).pack()
+        
+
+        label1 = tk.Label(self, text= "Enter Latitude").pack()
+        LAT = tk.Entry(self).pack()
+
+        label2 = tk.Label(self, text= "Enter Longitude").pack()
+        LON = tk.Entry(self).pack()
+
+        #Add button
+        
+
+        self.pack()
+
 
 """
 Window to display all mountains in database
@@ -133,7 +175,7 @@ class AllMountains(tk.Frame):
         #Formats the size of the window
         master.geometry('{}x{}'.format(400, 600))
         tk.Frame.configure(self,bg='gray77')
-        tk.Label(self, text="All Mountains", font=('Helvetica', 18, "bold")).pack(side="top", fill="x", pady=5)
+        tk.Label(self, text="All Mountains", bg = "gray77", font=('Helvetica', 18, "bold")).pack(side="top", fill="x", pady=5)
         tk.Button(self, text="Go back to start page",
                   command=lambda: master.switch_frame(StartPage)).pack()
 
@@ -144,7 +186,7 @@ class AllMountains(tk.Frame):
 
         #Adds items to the canvas which can be scrolled
         container = ttk.Frame(self)
-        canvas = tk.Canvas(container, width=380, height=550)
+        canvas = tk.Canvas(container, width=380, height=550, bg = "gray77")
         scrollbar = ttk.Scrollbar(container, orient="vertical", command=canvas.yview)
         scrollable_frame = ttk.Frame(canvas)
 
@@ -159,8 +201,10 @@ class AllMountains(tk.Frame):
 
         canvas.configure(yscrollcommand=scrollbar.set)
 
+        self.photo = ImageTk.PhotoImage(Image.open("mountbutton.jpg"))
+
         for i in data:
-            tk.Button(scrollable_frame, text = str(i[0]), font=('Helvetica', 18, "bold"), \
+            tk.Button(scrollable_frame, text = str(i[0]), image = self.photo, compound="top", font=('Helvetica', 18, "bold"), \
                 command=lambda i=i: toggle_home(str(i[1]))).pack(side="top", fill="x", pady=5)
 
 
@@ -179,7 +223,7 @@ class SavedMountains(tk.Frame):
         #Formats the size of the window
         master.geometry('{}x{}'.format(400, 600))
         tk.Frame.configure(self,bg='gray77')
-        tk.Label(self, text="SavedMountains", font=('Helvetica', 18, "bold")).pack(side="top", fill="x", pady=5)
+        tk.Label(self, text="SavedMountains", bg = "gray77", font=('Helvetica', 18, "bold")).pack(side="top", fill="x", pady=5)
         tk.Button(self, text="Go back to start page",
                   command=lambda: master.switch_frame(StartPage)).pack()
 
@@ -193,7 +237,7 @@ class SavedMountains(tk.Frame):
         # #Adds items to the canvas which can be scrolled
 
         container = ttk.Frame(self)
-        canvas = tk.Canvas(container, width=380, height=550)
+        canvas = tk.Canvas(container, width=380, height=550, bg = "gray77")
         scrollbar = ttk.Scrollbar(container, orient="vertical", command=canvas.yview)
         scrollable_frame = ttk.Frame(canvas)
 
@@ -207,9 +251,9 @@ class SavedMountains(tk.Frame):
         canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
 
         canvas.configure(yscrollcommand=scrollbar.set)
-
+        self.photo = ImageTk.PhotoImage(Image.open("mountbutton.jpg"))
         for i in data:
-            b = tk.Button(scrollable_frame, text = str(i[0]), font=('Helvetica', 18, "bold"), \
+            b = tk.Button(scrollable_frame, text = str(i[0]), image = self.photo, compound="top", font=('Helvetica', 18, "bold"), \
                 command=lambda i=i: show_info_daily(str(i[1]))).pack(side="top", fill="x", pady=5)
 
         container.pack()
@@ -224,23 +268,31 @@ Login frame that prompts the creation of the new UID
 class LoginFrame(tk.Frame):
     def __init__(self, master):
         super().__init__(master)
+
+
         #Formats the size of the window
         tk.Frame.configure(self,bg='gray77')
         tk.Frame.configure(master,bg='gray77')
         master.geometry('{}x{}'.format(400, 600))
-        self.label_username = Label(self, text = 'Zip Code')
+
+        self.back_img = ImageTk.PhotoImage(Image.open("mountain.jpg"))
+
+
+
+        self.label_username = Label(self, text = 'Zip Code', bg = "gray77")
 
         #Entries
         zipc = tk.StringVar()
-        self.entry_username = Entry(self, textvariable=zipc)
-        self.label_username.grid(row=0, sticky=E)
-        self.entry_username.grid(row=0, column=1)
+        self.entry_username = Entry(self, textvariable=zipc, bg = "gray77")
+        self.label_username.grid(row=1, sticky=E)
+        self.entry_username.grid(row=1, column=1)
         #Option the save the location (Unimplemented)
-        self.checkbox = Checkbutton(self, text="Save my Location")
-        self.checkbox.grid(columnspan=2)
+        self.checkbox = Button(self, text="Returning user", bg = "gray77", command=lambda: get_previous_UID(master))
+        self.checkbox.grid(columnspan=2, row=0)
 
         #Login button, moves user to main screen
-        self.logbtn = Button(self, text="Login", command=lambda: login(master, zipc))
+        # self.login_button = ImageTk.PhotoImage(Image.open("login_button.png"))
+        self.logbtn = Button(self, text="Create User", bg = "gray77", command=lambda: login(master, zipc))
         self.logbtn.grid(columnspan=2)
 
         self.pack()
