@@ -61,7 +61,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`Clients` (
   UNIQUE INDEX `UserID_UNIQUE` (`UID` ASC))
 ENGINE = InnoDB;
 
-
+SELECT * FROM Clients;
 -- -----------------------------------------------------
 -- Table `mydb`.`HomeMT`
 -- -----------------------------------------------------
@@ -224,7 +224,7 @@ DELIMITER ;
 -- -----------------------------------------------------
 -- procedure searchDistance
 -- -----------------------------------------------------
-
+DROP PROCEDURE searchDistance;
 DELIMITER $$
 USE `mydb`$$
 CREATE PROCEDURE `searchDistance` (
@@ -233,7 +233,7 @@ CREATE PROCEDURE `searchDistance` (
 )
 BEGIN
 	DECLARE baseLat, baseLon FLOAT DEFAULT 0;
-	SELECT Latitude, Longitude INTO baseLat, baseLon FROM UserInfo WHERE UID = UserID;
+	SELECT Latitude, Longitude INTO baseLat, baseLon FROM Clients WHERE UID = UserID;
     IF Home THEN
 		SELECT Daily.*
         FROM Daily INNER JOIN Mountains ON Daily.MID = Mountains.MID
@@ -244,7 +244,7 @@ BEGIN
 				 POW(Longitude-baseLon, 2))
 		) ASC;
 	ELSE
-		SELECT Daily.*
+		SELECT Mountains.Name, Daily.*
         FROM Daily INNER JOIN Mountains ON Daily.MID = Mountains.MID
         WHERE Daily.Day = 0 
         ORDER BY (
@@ -255,6 +255,14 @@ BEGIN
 END$$
 
 DELIMITER ;
+SELECT Latitude FROM Clients WHERE UID = 200;
+SELECT Longitude FROM Clients WHERE UID = 200;
+
+SELECT Latitude FROM Clients WHERE UID = 207;
+SELECT Longitude FROM Clients WHERE UID = 207;
+
+CALL searchDistance(200, 0);
+CALL searchDistance(207, 0);
 
 -- -----------------------------------------------------
 -- procedure searchLex

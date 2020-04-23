@@ -11,6 +11,7 @@ UID = 0
 zipc = ""
 
 def update_user(zipcode):
+    assert(UID != 0)
     update_user_coords(zipcode.get())
     tm.showinfo("Mountain Database", "Updated")
 
@@ -18,7 +19,8 @@ def update_user_coords(zipcode):
     global UID
     global zipc
     LAT,LON = zip_find.zip_to_coords(str(zipcode))
-
+    print(LAT)
+    print(LON)
     db.update_user_coordinates(UID, LAT, LON)
 
 def get_previous_UID(master):
@@ -53,8 +55,8 @@ Set a new UID and switch the the front page
 """
 def login(master, zipc):
     zipc = zipc.get()
-    update_user_coords(zipc)
     set_UID()
+    update_user_coords(zipc)
     master.switch_frame(StartPage)
 
 """
@@ -164,9 +166,11 @@ class StartPage(tk.Frame):
         tk.Label(self, text="Menu",bg="gray45", font=('Helvetica', 18, "bold")).pack(side="top", fill="x", pady=5)
         tk.Button(self, text="See All Mountains",bg="gray45",
                   command=lambda: master.switch_frame(AllMountains)).pack()
-        tk.Button(self, text="See Saved Mountains",bg="gray45",
+        tk.Button(self, text="Nearby Mountains",bg="gray45",
+                  command=lambda: master.switch_frame(NearbyMountains)).pack()
+        tk.Button(self, text="Saved Mountains",bg="gray45",
                   command=lambda: master.switch_frame(SavedMountains)).pack()
-        tk.Button(self, text="See Hourly Weather",bg="gray45",
+        tk.Button(self, text="Hourly Weather",bg="gray45",
                   command=lambda: master.switch_frame(HourlyWeatherMountains)).pack()        
         tk.Button(self, text="Edit User Info",bg="gray45",
                   command=lambda: master.switch_frame(EditUserInfo)).pack()
@@ -246,6 +250,57 @@ class AllMountains(tk.Frame):
         canvas.pack(side="left", fill="both", expand=True)
         scrollbar.pack(side="right", fill="y")
 
+class NearbyMountains(tk.Frame):
+    def __init__(self, master):
+        tk.Frame.__init__(self, master)
+        #Formats the size of the window
+        master.geometry('{}x{}'.format(400, 600))
+        tk.Frame.configure(self,bg='gray45')
+        tk.Label(self, text="All Mountains", bg = "gray45", font=('Helvetica', 18, "bold")).pack(side="top", fill="x", pady=5)
+        tk.Button(self, text="Go back to start page",
+                  command=lambda: master.switch_frame(StartPage)).pack()
+
+        
+        
+        #SQl call
+        global UID
+        data = db.sort_distence_all(UID)
+        # data = db.get_mountain_Names()
+
+        #Adds items to the canvas which can be scrolled
+        container = ttk.Frame(self)
+        canvas = tk.Canvas(container, width=380, height=550, bg = "gray45")
+        scrollbar = ttk.Scrollbar(container, orient="vertical", command=canvas.yview)
+        scrollable_frame = ttk.Frame(canvas)
+
+        scrollable_frame.bind(
+            "<Configure>",
+            lambda e: canvas.configure(
+                scrollregion=canvas.bbox("all")
+            )
+        )
+
+        canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
+
+        canvas.configure(yscrollcommand=scrollbar.set)
+
+        self.photos = []
+        for i in range(1, 70):
+            photo = ImageTk.PhotoImage(Image.open("But_Pics/"+str(i)+".jpg"))
+            self.photos.append(photo)
+
+        photo = ImageTk.PhotoImage(Image.open("But_Pics/"+str(1)+".jpg"))
+        self.photos.append(photo)
+
+        for i in data:
+            tk.Button(scrollable_frame, text = str(i[0]), image = self.photos[i[1]], compound="top", font=('Helvetica', 18, "bold"), \
+                command=lambda i=i: toggle_home(str(i[1]))).pack(side="top", fill="x", pady=5)
+
+
+        #The following adds the canvas to the scrollbar
+        container.pack()
+        canvas.pack(side="left", fill="both", expand=True)
+        scrollbar.pack(side="right", fill="y")
 """ 
 Displays all of the users selected mountains stored in HomeMT in the SQL database
 """

@@ -17,9 +17,6 @@ def sort_distence_all(UID):
 
     return data
 
-
-
-
 #Get a unique user ID
 def get_new_uid(latitude, longitude):
     db = MySQLdb.connect('localhost', # The Host
@@ -140,11 +137,24 @@ def update_user_coordinates(UID, LAT, LON):
 
 
     #SQL processing
-    cursor.callproc('updateCoordinates',[str(UID), str(LAT), str(LON), ])
+    # cursor.callproc('updateCoordinates',[str(UID), str(LAT), str(LON), ])
+    # db.commit()
+    # cursor.close()
 
-    cursor.close()
+
+    sql_string = 'UPDATE Clients'
+    sql_string += ' SET Latitude = '+str(LAT)+', Longitude = '+str(LON) 
+    sql_string += ' WHERE UID = '+str(UID)+';'
+
+    cursor.execute(sql_string)
+
+    data = cursor.fetchall()
+    db.commit()
 
     print("Updated User: "+str(UID)+" Coordinates"+str(LAT)+", "+str(LON))
+
+
+
 
 
 # Takes UserID as UID and boolean saying weter to return all mountains or user home mountains
@@ -167,7 +177,7 @@ def get_mountain_Names():
 
     return data #Formated as a 2d tuple
 
-# Takes UserID as UID and boolean saying weter to return all mountains or user home mountains
+# Takes UserID as UID and boolean saying wether to return all mountains or user home mountains
 def get_user_list(UID):
     db = MySQLdb.connect('localhost', # The Host
                          'BaseUser', # username
